@@ -20,6 +20,11 @@ def run(config: Properties) -> None:
     }
     FONT = pygame.font.SysFont(config['font_family'].data, 35)
     BIG_FONT = pygame.font.SysFont(config['font_family'].data, 75)
+    cells = [
+        [(240, 110), (350, 110), (460, 110)],
+        [(240, 220), (350, 220), (460, 220)],
+        [(240, 330), (350, 330), (460, 330)]
+    ]
 
     window = pygame.display.set_mode((800, 500))
     pygame.display.set_caption("Noughts and Crosses")
@@ -29,6 +34,11 @@ def run(config: Properties) -> None:
         pygame.draw.rect(window, COLORS['top_bar'], pygame.Rect(150, 0, 650, 60))
         text = FONT.render(text, True, COLORS[colorKey])
         window.blit(text, (150, 10))
+
+    def clear_board() -> None:
+        for i in range(len(cells)):
+            for j in range(len(cells[i])):
+                pygame.draw.rect(window, COLORS['background'], pygame.Rect(cells[i][j][0], cells[i][j][1], 100, 100))
 
 
 
@@ -42,13 +52,8 @@ def run(config: Properties) -> None:
         pygame.draw.rect(window, COLORS['top_bar'], pygame.Rect(*i))                                                    #   |
 
 
-    cells = [
-        [(240, 110), (350, 110), (460, 110)],
-        [(240, 220), (350, 220), (460, 220)],
-        [(240, 330), (350, 330), (460, 330)]
-    ]
 
-    hasGameStarted = False
+    isTheGameFinished = True
     running = True
     while running:
         for event in pygame.event.get():
@@ -58,27 +63,26 @@ def run(config: Properties) -> None:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 if (x > 15 and x < 115) and (y > 10 and y < 40):
-                    if not hasGameStarted:
-                        hasGameStarted = True
-                        game = Game([i for i in config['noughts_and_crosses.icons'].data.split(',')])
-                        write(f"{game.turn}\'s turn", game.turn)
-                elif hasGameStarted:
+                    clear_board()
+                    isTheGameFinished = False
+                    game = Game([i for i in config['noughts_and_crosses.icons'].data.split(',')])
+                    write(f"{game.turn}\'s turn", game.turn)
+                elif not isTheGameFinished:
                     for i in range(len(cells)):
                         for j in range(len(cells[i])):
                             if (x > cells[i][j][0] and x < cells[i][j][0] + 100) and (y > cells[i][j][1] and y < cells[i][j][1] + 100):
-                                #try:
+                                try:
                                     turn = game.turn
-                                    hasGameStarted, isItADraw = game.play(i, j)
-                                    pygame.draw.rect(window, COLORS['button'], pygame.Rect(cells[i][j][0], cells[i][j][1], 100, 100))
+                                    isTheGameFinished, isItADraw = game.play(i, j)
                                     txt = BIG_FONT.render(turn, True, COLORS[turn])
                                     txt_rect = txt.get_rect()
                                     txt_rect.center = (cells[i][j][0] + 50, cells[i][j][1] + 50)
                                     window.blit(txt, txt_rect)
                                     write(f'{game.turn}\'s turn', game.turn)
-                                    if not hasGameStarted:
-                                        write(f'{game.turn} won!', game.turn)
-                                #except ValueError: pass
-                                    break
+                                    if isTheGameFinished:
+                                        write(f'{game.turn} won! draw:{isItADraw}', game.turn)
+                                except ValueError: pass
+                                break
 
         pygame.display.update()
         pygame.display.flip()

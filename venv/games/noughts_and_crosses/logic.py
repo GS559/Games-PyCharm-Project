@@ -1,13 +1,13 @@
 class Game:
 
     def __init__(self, icons: list[str]) -> None:
-        self._board = [[None] * 3] * 3
+        self._board = [[None] * 3 for i in range(3)]
         self.icons = icons
         self.turn = icons[0]
         self.finished = False
 
     def _change_turn(self) -> None:
-        if not self.finished: self.turn = self.icons[0] if self._turn == self.icons[1] else self.icons[1]
+        if not self.finished: self.turn = self.icons[0] if self.turn == self.icons[1] else self.icons[1]
         else: raise ValueError('Game is already finished')
 
     def _check_win(self) -> tuple[bool]:
@@ -29,10 +29,9 @@ class Game:
         # searches for a draw situation
         isBoardFull = True
         for i in l:
-            for j in l[i]:
-                if not l[i][j] in self.icons:
-                    isBoardFull = False
-                    break
+            if None in i:
+                isBoardFull = False
+                break
         if isBoardFull:
             self.finished = True
             return True, True
