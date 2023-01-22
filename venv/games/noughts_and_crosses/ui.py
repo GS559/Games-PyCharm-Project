@@ -5,7 +5,7 @@ from .logic import Game
 
 
 
-def run(config: Properties) -> None:
+def run(config: Properties, lang: Properties) -> None:
     pygame.init()
 
     COLORS = {
@@ -78,9 +78,11 @@ def run(config: Properties) -> None:
                                     txt_rect = txt.get_rect()
                                     txt_rect.center = (cells[i][j][0] + 50, cells[i][j][1] + 50)
                                     window.blit(txt, txt_rect)
-                                    write(f'{game.turn}\'s turn', game.turn)
-                                    if isTheGameFinished:
-                                        write(f'{game.turn} won! draw:{isItADraw}', game.turn)
+                                    write(lang['noughts_and_crosses.turn_message'].data.replace('%1', game.turn), game.turn)
+                                    if isTheGameFinished and not isItADraw:
+                                        write(lang['noughts_and_crosses.win_message'].data.replace('%1', game.turn), game.turn)
+                                    elif isTheGameFinished and isItADraw:
+                                        write(lang['noughts_and_crosses.draw_message'].data, 'black')
                                 except ValueError: pass
                                 break
 

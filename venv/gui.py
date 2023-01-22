@@ -9,8 +9,9 @@ from games.noughts_and_crosses import ui as noughts_and_crosses
 
 class GUI :
 
-    def __init__(self, config: Properties) -> None:
+    def __init__(self, config: Properties, lang: Properties) -> None:
         self._config = config
+        self._lang = lang
         self._window_title = config['main_window_title'].data
 
         font_normal = (config['font_family'].data, int(config['font_size_normal'].data))
@@ -20,7 +21,9 @@ class GUI :
         self._layout = [
             [sg.Text(config['main_window_title'].data, font=font_big)],
             [sg.HSeparator()],
-        ] + [[sg.Button(game, font=font_normal, key=game)] for game in Games.list(self._config)]
+        ]
+        games_dict = Games.list(self._lang)
+        self._layout += [[sg.Button(games_dict[id], font=font_normal, key=id)] for id in games_dict.keys()]
         self._layout += [[sg.HSeparator()]] + [[sg.Button('Close', font=font_small)]]
 
     def load(self) -> None:
@@ -37,13 +40,13 @@ class GUI :
             if event == sg.WINDOW_CLOSED or event == 'Close':
                 os._exit(1)
 
-            elif event == 'Noughts and Crosses':
+            elif event == 'noughts_and_crosses':
                 self.window.close()
-                noughts_and_crosses.run(self._config)
+                noughts_and_crosses.run(self._config, self._lang)
 
 
 
-def main(config: Properties) -> None:
+def main(config: Properties, lang: Properties) -> None:
     sg.theme(config['main_gui_theme'].data)
-    window = GUI(config)
+    window = GUI(config=config, lang=lang)
     window.load()

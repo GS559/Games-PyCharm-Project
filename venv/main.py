@@ -10,7 +10,12 @@ def main() -> None:
         config = Properties()
         config.load(config_file)
 
+    # loads the language pack file
+    with open(f'lang/{config["language_pack"].data}.properties', 'rb') as language_pack_file:
+        lang = Properties()
+        lang.load(language_pack_file)
+
     # runs the main GUI
-    gui.main(config=config)
+    gui.main(config=config, lang=lang)
 
 main()
