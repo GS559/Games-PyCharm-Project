@@ -1,15 +1,17 @@
 import os
+from typing import List
+
 from jproperties import Properties
 
 
 class Games:
 
     @classmethod
-    def list(self, lang) -> dict:
-        '''
-        returns a dictionnary of the form:
+    def list(cls, lang) -> dict:
+        """
+        returns a dictionary of the form:
         {game_id: game_display_name}
-        '''
+        """
         l = [str(i).split("\'")[1] for i in list(os.scandir('games'))]
         l = [i for i in l if not (i.endswith('.py') or i.startswith('__'))]
 

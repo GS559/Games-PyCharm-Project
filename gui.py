@@ -6,13 +6,13 @@ from games.games import Games
 from games.noughts_and_crosses import ui as noughts_and_crosses
 
 
-
-class GUI :
+class GUI:
 
     def __init__(self, config: Properties, lang: Properties) -> None:
         self._config = config
         self._lang = lang
         self._window_title = config['main_window_title'].data
+        self.window = None
 
         font_normal = (config['font_family'].data, int(config['font_size_normal'].data))
         font_big = (config['font_family'].data, int(config['font_size_big'].data))
@@ -29,10 +29,10 @@ class GUI :
     def load(self) -> None:
 
         self.window = sg.Window(self._window_title, self._layout,
-                    size=(
-                        int(self._config['main_window_width'].data),
-                        int(self._config['main_window_height'].data)
-                    ))
+                                size=(
+                                    int(self._config['main_window_width'].data),
+                                    int(self._config['main_window_height'].data)
+                                ))
 
         while True:
             event, values = self.window.read()
@@ -43,7 +43,6 @@ class GUI :
             elif event == 'noughts_and_crosses':
                 self.window.close()
                 noughts_and_crosses.run(self._config, self._lang)
-
 
 
 def main(config: Properties, lang: Properties) -> None:

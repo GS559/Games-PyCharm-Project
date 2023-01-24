@@ -4,7 +4,6 @@ import gui
 
 
 def main() -> None:
-
     # loads the config file
     with open('config.properties', 'rb') as config_file:
         config = Properties()
@@ -17,5 +16,6 @@ def main() -> None:
 
     # runs the main GUI
     gui.main(config=config, lang=lang)
+
 
 main()
